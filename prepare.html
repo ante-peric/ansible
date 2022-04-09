@@ -1,0 +1,143 @@
+<!--
+   install.html
+   
+   Copyright 2022 Ante Perić <ante@peric.peric-server.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>CSD-Linux</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+<h2><center>CaksSonicDeveloper© - Linux</center></h2>
+<hr style="color:#ffb380">
+<center>Ansible</center>
+<hr style="color:#ffb380">
+<hr style="color:#ffb380">
+<center><p><a href="index.html">Početna</a></center> 
+<hr style="color:#ffb380">	
+<p><a href="modules.html">Modules</a></p>
+<p><a href="modules.html">Add Hoc Commands</a></p>
+<hr style="color:#ffb380">
+<p><b>2. Ansible Priprema</b></p>
+
+<p>Pripremamo Control Node za instalaciju Ansible - a i Python.</p>
+<p><b>Control Node:</b></p>
+<p>Install Python</p>
+  <code>
+$ dnf install python3
+  </code>
+<p>Install Ansible</p>  
+  <code>
+$ dnf install ansible
+  </code>
+<p>Ovdje treba kreirati i korisnika koji će biti zadužen za Ansible administraciju. Isti korisnik treba biti kreiran i na udaljenim računalima</p>
+
+<p><b>Remote Node:</b></p>
+<p>Kreiramo korisnika na svim korištenim udaljenim radnim stanicama</p>
+  <code>
+$ useradd ante
+  </code>
+  <p></p>
+  <code>
+$  echo zaporka_ovdje | passwd --stdin ante
+  </code>
+<p>Kriramo osnovni sudo setup (snapin file)</p>
+  
+ 
+  <code>
+$  echo "ante ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ante
+  </code>
+  
+<p>Na <b>Controle Node</b> kreiramo ssh ključeve:</p>  
+<p>Primjer:</p> 
+  <code>
+$ ssh-keygen
+  </code>
+<br></br>
+<table border="1">  
+
+
+<tr><td>
+Generating public/private rsa key pair.<br></br>
+Enter file in which to save the key (/home/ante/.ssh/id_rsa):<br></br> 
+Enter passphrase (empty for no passphrase):<br></br> 
+Enter same passphrase again:<br></br> 
+Your identification has been saved in /home/ante/.ssh/id_rsa.<br></br>
+Your public key has been saved in /home/ante/.ssh/id_rsa.pub.<br></br>
+The key fingerprint is:<br></br>
+SHA256:4GU5ztsx3pgn8q5VzmRFttH77YSUOje2qTcWy2T1tIE ante@peric.peric-server.local<br></br>
+The key's randomart image is:<br></br>
++---[RSA 3072]----+<br></br>
+|              +. |<br></br>
+|         .   o o.|<br></br>
+|      . =     +..|<br></br>
+|     . * .   Eooo|<br></br>
+|      . S o +o +*|<br></br>
+|         + %o O.=|<br></br>
+|        o B =B O |<br></br>
+|         + o  O .|<br></br>
+|        .oo .+ . |<br></br>
++----[SHA256]-----+<br></br>
+</td></tr> 
+
+</table> 
+<div id="go_middle">Hello There</div>
+<p>Kopiramo kreirani ključ na sve radne stanice</p>
+
+<table border="1">  
+<tr><td>
+[ante@peric ~]$ ssh-copy-id a3a.8.5.caksonic.local<br></br> 
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ante/.ssh/id_rsa.pub"<br></br>
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed<br></br>
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys<br></br>
+ante@a3a.8.5.caksonic.local's password: <br></br>
+
+Number of key(s) added: 1<br></br>
+
+Now try logging into the machine, with:   "ssh 'a3a.8.5.caksonic.local'"<br></br>
+and check to make sure that only the key(s) you wanted were added.<br></br>
+</td></tr> 
+</table> 
+
+<p>Na udaljenim računalima instaliramo python – kao root korisnik ili kao korisnik ante sa sudo </p>
+  <code>
+$ yum -y install python3
+</code>
+  <br>
+<code>
+$  alternatives --set python /usr/bin/python3
+</code>
+
+
+
+
+<hr style="color:#ffb380">
+<center><p><a href="uvod.html">Prethodna</a> | <a href="prepare_1.html">Sljedeća</a></center> 
+<hr style="color:#ffb380">	
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!--
+   prepare_1_1.html
+   
+   Copyright 2022 Ante Perić <ante@peric.peric-server.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>CSD-Linux</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+	<h2><center>CaksSonicDeveloper© - Linux</center></h2>
+<hr style="color:#ffb380">
+<center>Ansible</center>
+<hr style="color:#ffb380">
+<hr style="color:#ffb380">
+<center><p><a href="index.html">Početna</a></center> 
+<hr style="color:#ffb380">	
+<p><a href="modules.html">Modules</a></p>
+<p><a href="modules.html">Add Hoc Commands</a></p>
+<hr style="color:#ffb380">
+<p><b>2.1.2. Razumjevanje Ansible Konfiguracijskog File - a</b></p>
+<p>Redosljed postojanja (prioriteta) ansible.cfg file:</p>
+
+<p>1:   <b>/etc/ansible/ansible.cfg</b> - default</p>
+<p>2:   <b>~/.ansible.cfg</b> – ako postoji (overwrite) prepisat će defaultni</p>
+<p><b>./ansible.cfg</b> je konfiguracijski file u trenutnom Ansible projekt direktoriju (kao kod nas /home/ante/ansible) i uvijek će imati prednost ako postoji</p>
+<p>Alternativno može se kreirati varijabla “ANSIBLE_CONFIG” i ako postoji i ako upućuje na određeni configuracijski file, on će imati prednost.</p>
+<p>Za provjeru koji se ansible.cfg koristi moženo vidjeti s naredbom ispod</p>
+
+
+<p>Provjera gdje je lociran ansible.cfg file</p>
+<code>
+$ ansible --version<br>
+</code>
+<br>
+<code>
+ansible 2.9.27<br>
+  config file = /etc/ansible/ansible.cfg<br>
+  configured module search path = ['/home/ante/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']<br>
+  ansible python module location = /usr/lib/python3.6/site-packages/ansible<br>
+  executable location = /usr/bin/ansible<br>
+  python version = 3.6.8 (default, Sep  9 2021, 07:49:02) [GCC 8.5.0 20210514 (Red Hat 8.5.0-3)]<br>
+
+</code>
+
+<p>I za naš tutorijal promjenut ćemo defaultni ansible direktorij</p>
+<code>
+$ sudo mv ansible/ ansible.backup
+</code>
+
+<p>Ako sad pokrenemo naredbu za provjeru vidimo sljedeći output:</p>
+<br>
+<code>
+$ ansible --version<br>
+</code>
+<br>
+
+ansible 2.9.27<br>
+  config file = None<br>
+  configured module search path = ['/home/ante/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']<br>
+  ansible python module location = /usr/lib/python3.6/site-packages/ansible<br>
+  executable location = /usr/bin/ansible<br>
+  python version = 3.6.8 (default, Sep  9 2021, 07:49:02) [GCC 8.5.0 20210514 (Red Hat 8.5.0-3)]<br>
+<br>
+<p>Sad ćemo kreirati ansible.cfg file u našem projekt direktoriju</p>
+<code>
+$ cd /home/ante/ansible
+</code>
+<br>
+<code>
+$ vim ansible.cfg
+</code>
+<br>
+<br>
+[defaults]<br>
+inventory = inventory<br>
+remote_user = ante<br>
+host_key_checking = false<br>
+<br>
+[privilege_escalation]<br>
+become = True<br>
+become_method = sudo<br>
+become_user = root<br>
+become_ask_pass = False<br>
+<p>Ako sad odemo pokrenemo naredbu iz project directorija vidimo sljedeći output:</p>
+<code>$ ansible --version</code>
+<br>
+ansible 2.9.27<br>
+  <b>config file = /home/ante/ansible/ansible.cfg</b><br>
+  configured module search path = ['/home/ante/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']<br>
+  ansible python module location = /usr/lib/python3.6/site-packages/ansible<br>
+  executable location = /usr/bin/ansible<br>
+  python version = 3.6.8 (default, Sep  9 2021, 07:49:02) [GCC 8.5.0 20210514 (Red Hat 8.5.0-3)]<br>
+
+
+<p>ansible.cgf file može imati dvije ili više sekcije:</p>
+<p><b>[defaults]</b> sekcija </p>
+
+
+<p><b>inventory</b> = inventory - (ansible će gledat file inventory u trenutnom direktoriju)<br> 
+<b>remote_user= ante</b> - Identifikacija korisnika koji će se koristili za dohvaćanje udaljenog računala<br>
+<b>host_key_checking = false</b> - Postavlja Ansible manje tolerantan u slučaju da je nešto krivo s SSH host ključevima </p>
+<br>
+<p><b>[privilege_escalation]</b>  sekcija , objašnjavamo Anisblu kako izvršavati taskove na udaljenom računalu</p>
+<b>become = True</b> - Znači da ćemo izvršavati task kao netko drugi<br>
+<b>become_method = sudo</b> - Po defaultu je sudo<br>
+<b>become_user = root</b> - Koji korisnik će izvršiti task i postavljen je na root<br>
+<b>become_ask_pass = False</b> - Ovaj parametar specificira da nije potrebno pružiti zaporku</p>
+
+
+
+ 
+
+
+
+	<hr style="color:#ffb380">
+<center><p><a href="prepare_1.html">Prethodna</a> | <a href="prepare_1_2.html">Sljedeća</a></center> 
+<hr style="color:#ffb380">
+</body>
+
+</html>

@@ -1,0 +1,129 @@
+<!--
+   prepare_1_2.html
+   
+   Copyright 2022 Ante Perić <ante@peric.peric-server.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>CSD-Linux</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+	<h2><center>CaksSonicDeveloper© - Linux</center></h2>
+<hr style="color:#ffb380">
+<center>Ansible</center>
+<hr style="color:#ffb380">
+<hr style="color:#ffb380">
+<center><p><a href="index.html">Početna</a></center> 
+<hr style="color:#ffb380">	
+<p><a href="modules.html">Modules</a></p>
+<p><a href="modules.html">Add Hoc Commands</a></p>
+<hr style="color:#ffb380">
+<p><b>3. Uvod U Modules Basic And Add Hoc Naredbe</b></p>
+<p>Module – je naredba koju Ansible može pokrenuti. Lista modula se izlistava s naredbom:</p>
+<p><b>Authorative documentation</b></p>
+<code>
+$ ansible-doc
+</code>
+<br>
+<p><b>Lista Modula</b></p>
+<code>
+$ ansible-doc -l
+</code>
+
+<p>Službena stranica za Module - Index Module:</p>
+<p>https://docs.ansible.com/ansible/2.9/modules/modules_by_category.html</p>
+<p>Za informacije o modulu koristimo sljedeću naredbu:</p>
+<code>
+$ ansible-doc module_name<br>
+example:<br>
+$ ansible-doc  user<br>
+</code>
+<br>
+<p>Napomena:  Ako provjerimo python skriptu za ova modul i kad vidimo “=” to znaci da je ta opcija madantory, sve ostalo je optional.
+</p>
+
+<p><b>Stanja Modula:</b></p>
+<p>
+<b>stableinterface</b> - Modul je stabilan i siguran za uporabu<br>
+<b>preview</b> - Modul je “tech preview” i keywords i argumenti se mogu promjenuti u budućnosti<br>
+<b>deprecated</b> - Modul se nebi smio više koristiti i u budućnosti će biti ukljonjen<br>
+<b>removed</b> - Modul je uklonjen iz uporabei dokumentacija još uvijek postoji za pomoć korisnicima kod migracije za njegovu zamjenu<br>
+</p>
+<p><b>Module support status:</b></p>
+<p>suported_by polje u ansible-doc ukazuje tko je odhovoran za potporu modula</p>
+
+
+<p>
+<b>core</b> - Odgovoran je Core Ansible Developers Team<br>
+<b>curated</b> - Primarna odgovornost je partnerski tim i tvrtke. Izmjene su nadgledane od strane Core Ansible Team<br>
+<b>community</b> - Potpora je u potpunosti od strane zajednice<br>
+</p>
+
+<p><b>raw Module:</b></p>
+<p>raw Modul se koristi na održavanje (pristup) udaljenom računalu koji još nije postavljen od strane Ansible (nema SSH key, i nema instaliran Python3)</p>
+
+<p>Primjer - Instalacija python3 paketa na ansible-nesvjesnu radnu stanicu</p>
+<code>
+# ansible -u root  -i inventory a3a.8.5.caksonic.local --ask-pass -m raw 'yum -y install python3'
+</code>
+<br>
+<p>Za više: <a href="modules.html">Modules</a></p>
+<p><b>Add Hoc Naredba</b></p>
+<p>Syntax:</p>
+<code>
+$ ansible host_pattern [options]
+</code>
+<br>
+<code>
+$ ansible hosts -m module [-a ‘module arguments’] [-i inventory]
+</code>
+<br>
+<br>
+
+    <b>• hosts</b> – identificira udaljena računala<br> 
+      
+    <b>• -m</b> module označava korišteni modul<br>
+      
+    <b>• module arguments</b> – označava argumente modula<br>
+      
+    <b>• inventory</b> – identificira inventory file<br>
+<p>Primjer ping i service modula:</p>
+<code>
+$ ansible all -m ping<br>
+$ ansible all -m service -a “name=httpd state=started”<br>
+</code>
+
+<p>Za više: <a href="add_hoc.html">Add Hoc Commands</a></p>
+
+
+<hr style="color:#ffb380">
+<center><p><a href="prepare_1_1.html">Prethodna</a> | <a href="playbook.html">Sljedeća</a></center> 
+<hr style="color:#ffb380">
+
+</body>
+
+</html>

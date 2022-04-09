@@ -1,0 +1,189 @@
+<!--
+   prepare_1.html
+   
+   Copyright 2022 Ante Perić <ante@peric.peric-server.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>CSD-Linux</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+	<h2><center>CaksSonicDeveloper© - Linux</center></h2>
+<hr style="color:#ffb380">
+<center>Ansible</center>
+<hr style="color:#ffb380">
+<hr style="color:#ffb380">
+<center><p><a href="index.html">Početna</a></center> 
+<hr style="color:#ffb380">	
+<p><a href="modules.html">Modules</a></p>
+<p><a href="modules.html">Add Hoc Commands</a></p>
+<hr style="color:#ffb380">
+<p><b>2.1. Postavljanje Radnog Okruženja</b></p>
+<p>Pripremamo Control Node i Remote Node za uspješnu komunikaciju, postavljanjem zapisa u /etc/hosts na Control Node i kreiranje Inventory file - a.</p>
+<p>Na Controle Node uređujemo /etc/hosts file. Ovdje se može koristiti i DNS Server ali mi ćemo koristiti mogućnosti /etc/hosts file - a.</p>
+<p>Primjer:</p>
+
+<code>
+#Apache Ansible<br></br>
+192.168.122.41 a1a.8.5.caksonic.local a1a.8.5<br></br>
+192.168.122.42 a2a.8.5.caksonic.local a2a.8.5<br></br>
+192.168.122.43 a3a.8.5.caksonic.local a3a.8.5<br></br>
+</code>
+
+<div id="go_middle"></div>
+<p><b>2.1.1. Inventory File</b></p>
+<p>Jedan od važnijih dijelova Ansible je Inventori File. To je file koji sadrži FQDN i adrese Remote Nodes</p>
+<p>Mogući sadržaj:</p>
+<p><b>Host Group</b></p>
+
+<p>Functional Host Group:</p>
+
+    • web<br>
+    • lamp
+
+<p>Regional Host Group:</p>
+ 
+    • europe<br>
+    • africa
+	
+<p>Staging Host Group:</p>	
+	
+	• test<br>
+    • development<br>
+    • production
+	
+<p>U ovome tutorijalu nećemo koristiti defaultni inventory file koji se nalazi u /etc/ansible/hosts</p>	
+<p>Kreirat ćemo poseban direktorij, projekt directory,  za upravljanje i administraciju udaljenih računala </p>
+<code>
+$ mkdir ansible<br>
+$ cd ansible/<br>
+$ vim inventory
+</code>
+<p>Primjer Sadržaja Inventory File - a - Statički</p>	
+
+<code>
+[apache]<br>
+a1a.8.5.caksonic.local<br>
+a2a.8.5.caksonic.local<br>
+a3a.8.5.caksonic.local<br>
+<br>
+[hatomcat1]<br>
+t1a.8.5.caksonic.local<br>
+t2a.8.5.caksonic.local<br>
+t3a.8.5.caksonic.local<br>
+<br>
+[hadatabase1]<br>
+galera1a.8.5.caksonic.local<br>
+galera2a.8.5.caksonic.local<br>
+galera3a.8.5.caksonic.local<br>
+<br>
+[ftp]<br>
+ftp.8.5.caksonic.local<br>
+<br>
+[hadatabase2]<br>
+galera1.8.5.caksonic.local<br>
+galera2.8.5.caksonic.local<br>
+galera3.8.5.caksonic.local<br>
+<br>
+[iscsi]<br>
+iscsi.8.5.caksonic.local<br>
+<br>
+[tomcat0]<br>
+t0.8.5.caksonic.local<br>
+<br>
+[hatomcat2]<br>
+t1.8.5.caksonic.local<br>
+t2.8.5.caksonic.local<br>
+t2.8.5.caksonic.local<br>
+<br>
+[test]<br>
+test.8.5.caksonic.local<br>
+<br>
+[websphere]<br>
+websphere0.8.5.caksonic.local<br>
+</code>
+
+<p>Testiramo ga:</p>
+
+<code>
+$ ansible -i /home/ante/ansible/inventory all --list-hosts<br>
+</code>	
+
+<p>Output:</p>
+
+hosts (19):<br>
+    a1a.8.5.caksonic.local<br>
+    a2a.8.5.caksonic.local<br>
+    a3a.8.5.caksonic.local<br>
+    t1a.8.5.caksonic.local<br>
+    t2a.8.5.caksonic.local<br>
+    t3a.8.5.caksonic.local<br>
+    galera1a.8.5.caksonic.local<br>
+    galera2a.8.5.caksonic.local<br>
+    galera3a.8.5.caksonic.local<br>
+    ftp.8.5.caksonic.local<br>
+    galera1.8.5.caksonic.local<br>
+    galera2.8.5.caksonic.local<br>
+    galera3.8.5.caksonic.local<br>
+    iscsi.8.5.caksonic.local<br>
+    t0.8.5.caksonic.local<br>
+    t1.8.5.caksonic.local<br>
+    t2.8.5.caksonic.local<br>
+    test.8.5.caksonic.local<br>
+    websphere0.8.5.caksonic.local<br>
+	
+<p>Ispis Remote Nodes u grupi apache</p>
+
+<code>
+$ ansible  -i /home/ante/ansible/inventory --list-hosts apache
+</code>
+
+<p>Output:</p>
+	
+  hosts (3):<br>
+    a1a.8.5.caksonic.local<br>
+    a2a.8.5.caksonic.local<br>
+    a3a.8.5.caksonic.local<br>
+    
+    
+<p>Dinamički Inventory File:</p>
+<p>Koristi  se kod velikih okruženja. Za više:</p>
+<p>https://docs.ansible.com/ansible/latest/user_guide/intro_dynamic_inventory.html</p>
+<p>https://github.com/sandervanvugt?tab=repositories</p>
+
+
+
+	
+	
+	
+<hr style="color:#ffb380">
+<center><p><a href="prepare.html">Prethodna</a> | <a href="prepare_1_1.html">Sljedeća</a></center> 
+<hr style="color:#ffb380">
+	
+</body>
+
+</html>
