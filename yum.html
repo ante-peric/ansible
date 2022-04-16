@@ -1,0 +1,188 @@
+<!--
+   yum.html
+   
+   Copyright 2022 Ante Perić <ante@peric.peric-server.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>CSD-Linux</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+<h2><center>CaksSonicDeveloper© - Linux</center></h2>
+<hr style="color:#ffb380">
+<center>Ansible</center>
+<hr style="color:#ffb380">
+<hr style="color:#ffb380">
+<center><p><a href="index.html">Početna</a></center> 
+<hr style="color:#ffb380">
+<p><a href="modules.html" style="text-decoration: none;"> Ansible System Modules:</a></p>
+<hr style="color:#ffb380">
+<p><a href="https://docs.ansible.com/ansible/2.9/modules/yum_module.html#yum-module" style="text-decoration: none;"> Packaging yum Module - Documentation</a></p>
+<p>Informacije o yum modulu:</p>
+<code>
+$ ansible-doc yum
+</code>
+<br><br>
+    <center><table border="1">
+        <thead>
+            <tr>
+                <th> Parameter </th>
+                <th> Choices/<font color="blue">Defaults</font> </th>
+                <th> Comments </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>name<br><font color="purple">list / elements=strings</font></td>
+                <td></td>
+                <td>Ime paketa ili ime paketa s verzijom</td>
+            </tr>
+            
+            <tr>
+                <td>state<br>-</td>
+                <td>Choices:<br>absent<br> installed<br> latest<br> present<br> removed</td>
+                <td>Bilo da instaliramo (present ili installed, latest) ili uklanjamo (absent ili removed) pakete<br>
+                    <b>present</b> & <b>installed</b> će jednostavno osigurati da željeni paket je instaliran.<br>
+                    <b>latest</b> će update određeni paket na zadnju verziju ili će instalirati zadnju verziju.<br>
+                    <b>absent</b> & <b>removed</b> će ukloniti određeni paket.<br>
+                </td>
+            </tr>
+            
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+        </center>
+<br>
+<p>Primjeri:</p>
+
+<code>
+- name: install the latest version of Apache<br>
+  yum:<br>
+    name: httpd<br>
+    state: latest<br>
+<br><br>
+- name: ensure a list of packages installed<br>
+  yum:<br>
+    name: "{{ packages }}"<br>
+  vars:<br>
+    packages:<br>
+    - httpd<br>
+    - httpd-tools<br>
+<br><br>
+- name: remove the Apache package<br>
+  yum:<br>
+    name: httpd<br>
+    state: absent<br>
+<br><br>
+- name: install the latest version of Apache from the testing repo<br>
+  yum:<br>
+    name: httpd<br>
+    enablerepo: testing<br>
+    state: present<br>
+<br><br>
+- name: install one specific version of Apache<br>
+  yum:<br>
+    name: httpd-2.2.29-1.4.amzn1<br>
+    state: present<br>
+<br><br>
+- name: upgrade all packages<br>
+  yum:<br>
+    name: '*'<br>
+    state: latest<br>
+<br><br>
+- name: upgrade all packages, excluding kernel & foo related packages<br>
+  yum:<br>
+    name: '*'<br>
+    state: latest<br>
+    exclude: kernel*,foo*<br>
+<br><br>
+- name: install the nginx rpm from a remote repo<br>
+  yum:<br>
+    name: http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm<br>
+    state: present<br>
+<br><br>
+- name: install nginx rpm from a local file<br>
+  yum:<br>
+    name: /usr/local/src/nginx-release-centos-6-0.el6.ngx.noarch.rpm<br>
+    state: present<br>
+<br><br>
+- name: install the 'Development tools' package group<br>
+  yum:<br>
+    name: "@Development tools"<br>
+    state: present<br>
+<br><br>
+- name: install the 'Gnome desktop' environment group<br>
+  yum:<br>
+    name: "@^gnome-desktop-environment"<br>
+    state: present<br>
+<br><br>
+- name: List ansible packages and register result to print with debug later.<br>
+  yum:<br>
+    list: ansible<br>
+  register: result<br>
+<br><br>
+- name: Install package with multiple repos enabled<br>
+  yum:<br>
+    name: sos<br>
+    enablerepo: "epel,ol7_latest"<br>
+<br>
+- name: Install package with multiple repos disabled<br>
+  yum:<br>
+    name: sos<br>
+    disablerepo: "epel,ol7_latest"<br>
+<br><br>
+- name: Install a list of packages<br>
+  yum:<br>
+    name:<br>
+      - nginx
+      - postgresql<br>
+      - postgresql-server<br>
+    state: present<br>
+<br><br>
+- name: Download the nginx package but do not install it<br>
+  yum:<br>
+    name:<br>
+      - nginx<br>
+    state: latest<br>
+    download_only: true<br>
+
+
+</code>
+	
+</body>
+
+</html>

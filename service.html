@@ -1,0 +1,131 @@
+<!--
+   service.html
+   
+   Copyright 2022 Ante Perić <ante@peric.peric-server.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>CSD-Linux</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+	<h2><center>CaksSonicDeveloper© - Linux</center></h2>
+<hr style="color:#ffb380">
+<center>Ansible</center>
+<hr style="color:#ffb380">
+<hr style="color:#ffb380">
+<center><p><a href="index.html">Početna</a></center> 
+<hr style="color:#ffb380">
+<p><a href="modules.html" style="text-decoration: none;"> Ansible System Modules:</a></p>
+<hr style="color:#ffb380">
+<p><a href="https://docs.ansible.com/ansible/2.9/modules/service_module.html#service-module" style="text-decoration: none;"> Packaging service Module - Documentation</a></p>
+<p>Informacije o service modulu:</p>	
+<code>
+$ ansible-doc service
+</code>
+    <center><table border="1">
+        <thead>
+            <tr>
+                <th> Parameter </th>
+                <th> Choices/<font color="blue">Defaults</font> </th>
+                <th> Comments </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>name<br><font color="purple">string</font>/<font color="red">required</font></td>
+                <td></td>
+                <td>Ime Servisa</td>
+            </tr>
+            
+            <tr>
+                <td>enabled<br><font color="purple">boolean</font></td>
+                <td>Choices:<br><br> no<br>yes</td>
+                <td>Osigurava da li će service startati nakon boot procesa<br>Najmanje jedno stanje je potrebno.</td>
+            </tr>
+            
+            <tr>
+                <td>state<br><font color="purple">string</font></td>
+                <td>Choices:<br><br> reloaded<br>restarted<br>started<br>stopped</td>
+                <td>started/stopped su "idempotent" radnje koje neće izvršavati naredbe osim ako je potrebno<br>restarted - Restartirat će servis<br>reload - Uvijek će reload<br> Najmanje jedno stanje je potrebno<br>Napomena: reload će startati servis ako već nije startan </td>
+            </tr>
+            
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+        </center>
+<p>
+Primjeri:<br><br>
+<code>
+- name: Start service httpd, if not started<br>
+  service:<br>
+    name: httpd<br>
+    state: started<br>
+<br><br>
+- name: Stop service httpd, if started<br>
+  service:<br>
+    name: httpd<br>
+    state: stopped<br>
+<br><br>
+- name: Restart service httpd, in all cases<br>
+  service:<br>
+    name: httpd
+    state: restarted<br>
+<br><br>
+- name: Reload service httpd, in all cases<br>
+  service:<br>
+    name: httpd<br>
+    state: reloaded<br>
+<br><br>
+- name: Enable service httpd, and not touch the state<br>
+  service:<br>
+    name: httpd<br>
+    enabled: yes<br>
+<br><br>
+- name: Start service foo, based on running process /usr/bin/foo<br>
+  service:<br>
+    name: foo
+    pattern: /usr/bin/foo<br>
+    state: started<br>
+<br><br>
+- name: Restart network service for interface eth0<br>
+  service:<br>
+    name: network<br>
+    state: restarted<br>
+    args: eth0<br>
+
+
+</code>
+
+</p>
+
+</body>
+
+</html>

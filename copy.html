@@ -1,0 +1,162 @@
+<!--
+   copy.html
+   
+   Copyright 2022 Ante Perić <ante@peric.peric-server.local>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>CSD-Linux</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.36" />
+</head>
+
+<body>
+	<h2><center>CaksSonicDeveloper© - Linux</center></h2>
+<hr style="color:#ffb380">
+<center>Ansible</center>
+<hr style="color:#ffb380">
+<hr style="color:#ffb380">
+<center><p><a href="index.html">Početna</a></center> 
+<hr style="color:#ffb380">
+<p><a href="modules.html" style="text-decoration: none;"> Ansible System Modules:</a></p>
+<hr style="color:#ffb380">
+<p><a href="https://docs.ansible.com/ansible/2.9/modules/copy_module.html#copy-module" style="text-decoration: none;"> File copy Module - Documentation</a></p>
+<p>Informacije o copy modulu:</p>	
+<code>
+$ ansible-doc copy
+</code>
+<center><table border="1">
+        <thead>
+            <tr>
+                <th> Parameter </th>
+                <th> Choices/<font color="blue">Defaults</font> </th>
+                <th> Comments </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>content<br><font color="purple">string</font></td>
+                <td></td>
+                <td>Kad se koristi umjesto "src", postavlja se sadržaj file - a, direktno za određenu vrijednost<br>Koristi se samo u slučaju ako je odredište file i kreira file ako ne postoji<br>Za napredno formatiranje ili ako "content" sadrži varijablu koristi se "template" module</td>
+            </tr>
+            
+            <tr>
+                <td>dest<br><font color="purple">path</font>/<font color="red">required</font></td>
+                <td></td>
+                <td>Udaljeni apsolutni put gdje će se file kopirati<br>Ako je "src" direktorij, tada ovo mora također biti direktorij<br>Ako je "dest" nepostojeći put ili "dest" završava s "/" ili "src" je direktorij, "dest" je kreiran</td>
+            </tr>
+            
+            <tr>
+                <td>force<br><font color="purple">boolean</font></td>
+                <td>Choices:<br> no<br><font color="blue">yes <--</font> </td>
+                <td>Ako je yes - udaljeni file će biti zamjenjen kad je sadržaj drugačiji negu na odredištu<br>Ako je no - file će se samo prebaciti ako odredište ne postoji</td>
+            </tr>
+            
+            <tr>
+                <td>mode<br><font color="purple">path</font></td>
+                <td></td>
+                <td>Dopuštenja za odredišni file ili direktorij</td>
+            </tr>
+        </tbody>
+    </table>
+        </center>
+
+<p>
+Primjeri:<br><br>
+<code>
+- name: Copy file with owner and permissions<br>
+  copy:<br>
+    src: /srv/myfiles/foo.conf<br>
+    dest: /etc/foo.conf<br>
+    owner: foo<br>
+    group: foo<br>
+    mode: '0644'<br>
+<br><br>
+- name: Copy file with owner and permission, using symbolic representation<br>
+  copy:<br>
+    src: /srv/myfiles/foo.conf<br>
+    dest: /etc/foo.conf<br>
+    owner: foo<br>
+    group: foo<br>
+    mode: u=rw,g=r,o=r<br>
+<br><br>
+- name: Another symbolic mode example, adding some permissions and removing others<br>
+  copy:<br>
+    src: /srv/myfiles/foo.conf<br>
+    dest: /etc/foo.conf<br>
+    owner: foo<br>
+    group: foo<br>
+    mode: u+rw,g-wx,o-rwx<br>
+<br><br>
+- name: Copy a new "ntp.conf file into place, backing up the original if it differs from the copied version<br>
+  copy:<br>
+    src: /mine/ntp.conf<br>
+    dest: /etc/ntp.conf<br>
+    owner: root<br>
+    group: root<br>
+    mode: '0644'<br>
+    backup: yes<br>
+<br><br>
+- name: Copy a new "sudoers" file into place, after passing validation with visudo<br>
+  copy:<br>
+    src: /mine/sudoers<br>
+    dest: /etc/sudoers<br>
+    validate: /usr/sbin/visudo -csf %s<br>
+<br>
+- name: Copy a "sudoers" file on the remote machine for editing<br>
+  copy:<br>
+    src: /etc/sudoers<br>
+    dest: /etc/sudoers.edit<br>
+    remote_src: yes<br>
+    validate: /usr/sbin/visudo -csf %s<br>
+<br><br>
+- name: Copy using inline content<br>
+  copy:<br>
+    content: '# This file was moved to /etc/other.conf'<br>
+    dest: /etc/mine.conf<br>
+<br><br>
+- name: If follow=yes, /path/to/file will be overwritten by contents of foo.conf<br>
+  copy:<br>
+    src: /etc/foo.conf<br>
+    dest: /path/to/link  # link to /path/to/file<br>
+    follow: yes<br>
+<br><br>
+- name: If follow=no, /path/to/link will become a file and be overwritten by contents of foo.conf<br>
+  copy:<br>
+    src: /etc/foo.conf<br>
+    dest: /path/to/link  # link to /path/to/file<br>
+    follow: no<br>
+
+
+</code>
+</p>
+
+
+
+
+
+	
+</body>
+
+</html>

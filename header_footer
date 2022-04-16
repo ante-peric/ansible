@@ -33,3 +33,17 @@
 
 
 
+
+Na istoj stranici
+<a href="#go_middle">Go Middle</a>
+<div id="go_middle">Hello There</div>
+
+sa druge stranice
+<a href="prepare.html#go_middle">Link Text</a>
+<div id="go_middle">Hello There</div>
+
+
+
+
+
+

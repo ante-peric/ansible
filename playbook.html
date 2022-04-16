@@ -40,9 +40,202 @@
 <center><p><a href="index.html">Početna</a></center> 
 <hr style="color:#ffb380">	
 <p><a href="modules.html">Modules</a></p>
-<p><a href="modules.html">Add Hoc Commands</a></p>
+<p><a href="add_hoc.html">Add Hoc Commands</a></p>
 <hr style="color:#ffb380">
 <p><b>4. Playbook</b></p>
+<p>
+Playbooks su kreirani pomoću YAML (Yet Another Markup Language – prema nekima, dik je za neke YAML Aint Markup Language).<br>
+Kod YAML (.yml ili .yaml ekstenzija) je važna <b>identation</b>, ne koristimo tabs, već space, uobicajeno dva spacea će uraditi posao.<br><br>
+Ako ćemo koristiti vim uređivač za pisanje Playbook, možemo napravit jedan trik, koji će nam olakšati kreiranje Playbook kad koristimo YAML.<br>
+Kreirat ćemo "vimrc" file unutar /home direktorija i svaki put kad stisnemo tab odvojit će se dva mjesta.<br>
+<br>
+<code>
+$ vim ~/.vimrc
+</code>
+<br>
+<br>
+Sa sadržajem:<br><br>
+<code>
+autocmd FileType yaml setlocal  ai ts=2 sw=2 et
+</code>
+</p>
+<p>
+<b>Struktura:</b><br><br>
+Start:<br> 
+Name:<br>    
+Parametars:<br> 
+Tasks:<br><br>
+Jednostavan Primjer:<br>
+<code>
+---<br>
+- name: mytest<br>         
+  hosts: all<br>            
+  tasks:<br>
+
+  - name: Install<br>
+    yum:<br>
+     name: httpd<br>
+</code>
+</p>
+<p>
+Primjer Playbook  -a, gdje se instalira VSFTPD. Unutar project directory /home/ante/ansible kreiramo: <br>
+<code>
+$ vim  vsftpd.yml
+</code> 
+<br>
+<br> 
+<p>
+Sa sadržajem:
+</p>    
+<code>
+---<br>
+- name: Instalacija vsftpd<br> 
+  hosts: test<br>
+  tasks:<br>
+<br>
+  - name: Install vsftpd<br>
+    yum:<br> 
+      name: vsftpd<br> 
+
+  - name: Enable vsftpd<br>
+    service:<br> 
+      name: vsftpd<br>
+      enabled: yes<br>
+      state: started<br> 
+
+
+  - name: Create readme file<br>
+    copy:<br> 
+      content: "Welcome to this FTP server"<br>
+      dest: /var/ftp/pub/README<br>
+      force: no<br>
+</code>     
+</p>
+
+<p>Korišteni Moduli:<br>
+    • yum<br>
+    • service<br>
+    • copy<br>
+</p>
+
+<p>Pokrećemo iz project directorija s naredbom:</p><br>
+<code>
+$ ansible-playbook vsftpd.yml 
+</code>
+<br>
+<p>Naredba za provjeru ispravnosti YAML syntax:</p>
+<code>
+$ ansible-playbook --syntax-check vsftpd.yml
+</code>
+<br>
+<br>
+<p>Za detaljnije možemo koristiti "-v" zastavicu</p>
+<p>verbosity:</p>
+<p>
+
+<b>-v</b>       : Task result<br>
+<b>-vv</b>      : Task result and task configuration<br>
+<b>-vvv</b>     : Information about connections to managed host(s)<br>
+<b>-vvvv</b>    : Adds information about plugins, user used to run script and names of scripts that are executed<br>
+</p>
+
+<p>C opcija za kreirani Playbook - Kad koristimo -C opciju Playbook će se pokrenuti al neće se izvršavati taskovi.<br> 
+Ova opcija nam služi za preview Playbook - a</p>
+<p>Dry run:</p>
+<code>
+$ ansible-playbook -C vsftpd.yml
+</code>
+<br>
+<p><b>4.1. Multiple Playbook</b></p>
+<div id="go_multiple"></div>
+<p>
+Razumjevanje Plays :<br>
+<br>
+    • Play je serija taskova koji se izvršavaju na određenom hostu ili grupi iz inventory file – a, koristeći specifične kredientals.<br>
+<br>      
+    • Koristeći multiple plays dopušteno je pokrenuti taskove na različitim hostovima, koristeći drugačije kredientals iz samog playbooka<br>
+<br>      
+    • Sa play definicijom parametri mogu biti:<br>
+<br>
+    a) <b></b>remote_user</b>: ime remote korisnika<br>
+    b) <b>become</b>: enable or disable privilege escalation<br>
+    c)  <b>become_method</b>: dopustiti korištenje alternativnog escalation privilege<br>
+    d)  <b>become_user</b>: target korisnik koji se koristi za privilege escalation<br>
+<br>
+Primjer višestrukog Playbook - a<br>
+
+<code>
+---<br>
+- name: enable webserver<br>
+  hosts: test<br>
+  tasks:<br>
+<br>  
+  - name: install httpd and firewall<br>
+    yum:<br> 
+      name:<br>
+        - httpd<br>
+        - firewalld<br>
+      state: latest<br>
+<br>
+  - name: install welcome page<br>
+    copy:<br>
+      content: "Hello Ansible"<br>
+      dest: /var/www/html/index.html<br>
+<br>
+  - name: start web service<br>
+    service:<br> 
+      name: httpd<br>
+      enabled: true<br>
+      state: started<br>
+<br>
+  - name: start firewall service<br>
+    service:<br>
+      name: firewalld<br>
+      enabled: true<br>
+      state: started<br>
+<br>
+  - name: open firewalld<br>
+    firewalld:<br> 
+      service: http<br>
+      permanent: true<br>
+      state: enabled<br>
+      immediate: yes<br>
+<br>
+- name: test webserver access     < ---- Tu Počinje <br>
+  hosts: localhost<br>
+  become: no<br>
+  tasks:<br>
+<br>
+  - name: connect to the server<br>
+    uri:<br> 
+      url: http://test.8.5.caksonic.local<br>
+      return_content: yes<br>
+      status_code: 200<br>
+<br>
+</code>
+<br>
+Korišteni Moduli:<br>
+<br>
+Task 1:<br>
+<br>
+
+    • yum<br>
+      <br>
+    • copy<br>
+      <br>
+    • service<br>
+      <br>
+    • firewalld<br>
+<br>
+<br>
+Task 2:<br>
+<br>
+    • uri<br>
+</p>
+
+
+
+
 
 
 
